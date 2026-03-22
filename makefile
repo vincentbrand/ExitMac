@@ -5,15 +5,16 @@
 #   make safari       - Clean Safari browser history & data
 #   make ssh          - Remove all SSH keys
 #   make chrome       - Remove all Chrome profile account data
+#   make files        - Remove all files from Documents, Desktop & Downloads
 #   make help         - Show this help message
 # ==============================================================================
 
-.PHONY: all safari ssh chrome confirm help
+.PHONY: all safari ssh chrome files confirm help
 
 # ------------------------------------------------------------------------------
 # Default target: run everything
 # ------------------------------------------------------------------------------
-all: confirm safari ssh chrome
+all: confirm safari ssh chrome files
 	@echo ""
 	@echo "✅  All cleanup tasks completed."
 
@@ -22,7 +23,8 @@ all: confirm safari ssh chrome
 # ------------------------------------------------------------------------------
 confirm:
 	@echo "⚠️  WARNING: This will permanently delete browser history, SSH keys,"
-	@echo "    and Chrome profile data. This cannot be undone."
+	@echo "    Chrome profile data, and all files in Documents, Desktop & Downloads."
+	@echo "    This cannot be undone."
 	@printf "    Are you sure? [y/N] "; \
 	read ans; \
 	if [ "$$ans" != "y" ] && [ "$$ans" != "Y" ]; then \
@@ -171,15 +173,34 @@ chrome:
 	@echo "    Chrome cleanup complete."
 
 # ------------------------------------------------------------------------------
+# Files: remove all files from Documents, Desktop, and Downloads
+# ------------------------------------------------------------------------------
+files:
+	@echo ""
+	@echo "📁  Cleaning Documents, Desktop & Downloads..."
+
+	@rm -rf "$(HOME)/Documents/"* "$(HOME)/Documents/".* 2>/dev/null || true
+	@echo "    ✓ Documents cleared"
+
+	@rm -rf "$(HOME)/Desktop/"* "$(HOME)/Desktop/".* 2>/dev/null || true
+	@echo "    ✓ Desktop cleared"
+
+	@rm -rf "$(HOME)/Downloads/"* "$(HOME)/Downloads/".* 2>/dev/null || true
+	@echo "    ✓ Downloads cleared"
+
+	@echo "    Files cleanup complete."
+
+# ------------------------------------------------------------------------------
 # Help
 # ------------------------------------------------------------------------------
 help:
 	@echo ""
 	@echo "macOS Laptop Cleanup Makefile"
 	@echo "------------------------------"
-	@echo "  make all      Run all cleanup tasks (safari + ssh + chrome)"
+	@echo "  make all      Run all cleanup tasks (safari + ssh + chrome + files)"
 	@echo "  make safari   Clean Safari history, cookies, cache & storage"
 	@echo "  make ssh      Remove SSH keys, known_hosts, config & agent cache"
 	@echo "  make chrome   Remove Chrome profile login data, history & cache"
+	@echo "  make files    Remove all files from Documents, Desktop & Downloads"
 	@echo "  make help     Show this message"
 	@echo ""
